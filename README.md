@@ -1,32 +1,57 @@
-# TFT Tactics Lab
+# Email Marketing Tracker
 
-Lightweight browser sandbox inspired by Riot's Teamfight Tactics. Draft units, track trait breakpoints, and plan your next level-up timing directly in the browser.
+A fullstack Next.js application for tracking email marketing campaigns. Track email opens and link clicks for your CRM marketing purposes.
 
-## Tech stack
+## Features
 
-- Vite + React + TypeScript
-- Flat ESLint config with TypeScript + React rules
-- Vanilla CSS for a game-inspired UI
+- 📧 **Campaign Management**: Create and manage email marketing campaigns
+- 👁️ **Open Tracking**: Track when recipients open your emails using pixel tracking
+- 🔗 **Click Tracking**: Track when recipients click links in your emails
+- 📊 **Analytics Dashboard**: View detailed statistics and performance metrics
+- 📈 **Real-time Tracking**: Monitor email engagement in real-time
 
-## Available scripts
+## Setup
 
+1. Install dependencies:
 ```bash
 npm install
-npm run dev
-npm run build
-npm run preview
-npm run lint
-npm run test
 ```
 
-## Gameplay loop
+2. Configure environment variables (create `.env.local`):
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
 
-1. **Shop:** Reroll and purchase champions with TFT-inspired cost odds.
-2. **Bench & Board:** Select bench units and click any hex to deploy. Select a fielded unit twice to recall it.
-3. **Traits:** Trait panel updates live as you field units.
-4. **Round planner:** Simple guidance text reacts to your economy, level, and trait progress.
-5. **Scouting:** Default scouting notes emulate lobby intel; refresh the shop to generate new ideas.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-All UI text remains in English per the requirement, while this documentation explains the overall project setup.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## How It Works
 
+### Email Open Tracking
+When an email is sent, a 1x1 transparent pixel is embedded in the email. When the recipient opens the email, their email client requests this pixel, which triggers the tracking.
+
+### Link Click Tracking
+All links in the email are automatically replaced with tracking URLs that redirect to the original destination while logging the click event.
+
+### Database
+The application uses SQLite for data storage. The database file (`email_tracker.db`) is automatically created on first run.
+
+## Usage
+
+1. **Create a Campaign**: Go to "Create New Campaign" and fill in the campaign details
+2. **Send Emails**: Use the send email form on the campaign detail page to send tracked emails
+3. **View Analytics**: Check the Analytics page to see detailed tracking statistics
+
+## Important Notes
+
+- Make sure to configure your SMTP settings correctly for sending emails
+- The tracking pixel and links require the application to be accessible from the internet for production use
+- This tool is intended for legitimate marketing purposes with proper consent from recipients
