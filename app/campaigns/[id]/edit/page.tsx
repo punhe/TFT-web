@@ -1,57 +1,117 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card, CardBody, CardHeader, Input, Textarea, Button } from '@heroui/react';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import Link from 'next/link';
+import { FiArrowLeft, FiSave, FiX } from 'react-icons/fi';
+import { Card, CardBody, CardHeader, Input, Textarea, Button, Select, SelectItem, Spinner } from '@heroui/react';
 
-export default function NewCampaignPage() {
+export default function EditCampaignPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const params = useParams();
+  const campaignId = params?.id as string;
+  
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     subject: '',
     from_email: '',
     from_name: '',
     html_content: '',
+    status: 'draft' as 'draft' | 'sent' | 'scheduled',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  useEffect(() => {
+    if (campaignId) {
+      fetchCampaign();
+    }
+  }, [campaignId]);
 
+  const fetchCampaign = async () => {
     try {
-      const response = await fetch('/api/campaigns', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
+      const response = await fetch(`/api/campaigns/${campaignId}`);
       if (response.ok) {
         const campaign = await response.json();
-        router.push(`/campaigns/${campaign.id}`);
+        setFormData({
+          name: campaign.name || '',
+          subject: campaign.subject || '',
+          from_email: campaign.from_email || '',
+          from_name: campaign.from_name || '',
+          html_content: campaign.html_content || '',
+          status: campaign.status || 'draft',
+        });
       } else {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        const errorMessage = errorData.details || errorData.error || 'Failed to create campaign';
-        const hint = errorData.hint ? `\n\n${errorData.hint}` : '';
-        alert(`${errorMessage}${hint}`);
+        alert('Failed to load campaign');
+        router.push('/campaigns');
       }
     } catch (error) {
-      console.error('Error creating campaign:', error);
-      alert('Error creating campaign. Please check the console for details.');
+      console.error('Error fetching campaign:', error);
+      alert('Error loading campaign');
+      router.push('/campaigns');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      const response = await fetch(`/api/campaigns/${campaignId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        router.push(`/campaigns/${campaignId}`);
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        const errorMessage = errorData.details || errorData.error || 'Failed to update campaign';
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Error updating campaign:', error);
+      alert('Error updating campaign. Please check the console for details.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container flex items-center justify-center min-h-[400px]">
+        <Card className="p-8">
+          <CardBody className="items-center">
+            <Spinner size="lg" color="primary" />
+            <p className="mt-4 text-gray-600">Loading campaign...</p>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <Card className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl">
-        <CardHeader>
-          <h1 className="text-3xl font-bold">Create New Campaign</h1>
+        <CardHeader className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Edit Campaign</h1>
+            <p className="text-white/90 mt-1">Update campaign details</p>
+          </div>
+          <Button
+            as={Link}
+            href={`/campaigns/${campaignId}`}
+            variant="light"
+            startContent={<FiArrowLeft />}
+            className="text-white hover:bg-white/20"
+            size="lg"
+          >
+            Back
+          </Button>
         </CardHeader>
-        <CardBody className="pt-0">
-          <p className="text-white/90">Fill in the details below to create a new email marketing campaign</p>
-        </CardBody>
       </Card>
 
       <Card className="shadow-lg">
@@ -116,6 +176,24 @@ export default function NewCampaignPage() {
               />
             </div>
 
+            <Select
+              label="Status"
+              selectedKeys={[formData.status]}
+              onSelectionChange={(keys) => {
+                const selected = Array.from(keys)[0] as string;
+                setFormData({ ...formData, status: selected as 'draft' | 'sent' | 'scheduled' });
+              }}
+              variant="bordered"
+              size="lg"
+              classNames={{
+                label: "text-gray-700 font-semibold"
+              }}
+            >
+              <SelectItem key="draft" value="draft">Draft</SelectItem>
+              <SelectItem key="sent" value="sent">Sent</SelectItem>
+              <SelectItem key="scheduled" value="scheduled">Scheduled</SelectItem>
+            </Select>
+
             <Textarea
               label="Email Content (HTML)"
               placeholder="<html><body><h1>Your email content here</h1><p>You can use HTML tags.</p><a href='https://example.com'>Click here</a></body></html>"
@@ -123,7 +201,7 @@ export default function NewCampaignPage() {
               onChange={(e) => setFormData({ ...formData, html_content: e.target.value })}
               isRequired
               variant="bordered"
-              minRows={10}
+              minRows={12}
               classNames={{
                 input: "font-mono text-sm",
                 label: "text-gray-700 font-semibold"
@@ -135,16 +213,18 @@ export default function NewCampaignPage() {
                 type="submit"
                 color="primary"
                 size="lg"
-                isLoading={loading}
+                isLoading={saving}
+                startContent={!saving && <FiSave />}
                 className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold"
               >
-                {loading ? 'Creating...' : 'Create Campaign'}
+                {saving ? 'Saving...' : 'Save Changes'}
               </Button>
               <Button
-                type="button"
+                as={Link}
+                href={`/campaigns/${campaignId}`}
                 variant="bordered"
                 size="lg"
-                onPress={() => router.back()}
+                startContent={<FiX />}
                 className="font-semibold"
               >
                 Cancel

@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Header from '@/components/Header'
+import { Providers } from './providers'
 
 export const metadata: Metadata = {
-  title: 'Email Marketing Tracker',
-  description: 'Track email opens and clicks for CRM marketing campaigns',
+  title: 'Punhe CRM',
+  description: 'Email marketing tracker - Track email opens and clicks for CRM marketing campaigns',
   icons: {
     icon: '/assests/favicon.ico',
   },
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
-        <main className="main-content">
-          {children}
-        </main>
+        <Providers>
+          <Header />
+          <main className="main-content">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   )

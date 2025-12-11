@@ -18,10 +18,9 @@ npm install
 ```
 
 2. **Set up Supabase Database** (Required):
-   - Follow the detailed guide in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
-   - Create a Supabase project
+   - Create a Supabase project at https://supabase.com
    - Run the SQL schema from `supabase-schema.sql` in Supabase SQL Editor
-   - Get your API keys from Supabase dashboard
+   - Get your API keys from Supabase dashboard (Settings > API)
 
 3. Configure environment variables (create `.env.local` in the root directory):
 ```env
@@ -41,7 +40,7 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
    📖 **Setup Guides**:
-   - **Supabase Setup**: See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for database configuration
+   - **Supabase Setup**: Create a Supabase project and run `supabase-schema.sql` in the SQL Editor
    - **Gmail SMTP Setup**: See [GMAIL_SMTP_SETUP.md](./GMAIL_SMTP_SETUP.md) for email sending configuration
 
 4. Run the development server:
@@ -65,7 +64,7 @@ The application uses **Supabase** (PostgreSQL) for data storage. You need to:
 2. Run the SQL schema from `supabase-schema.sql` 
 3. Configure your Supabase credentials in `.env.local`
 
-See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed instructions.
+See the `supabase-schema.sql` file for the database schema. Run it in your Supabase SQL Editor.
 
 ## Usage
 

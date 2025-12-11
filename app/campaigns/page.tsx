@@ -2,6 +2,7 @@ import Link from 'next/link';
 import db from '@/lib/db';
 import { Campaign } from '@/lib/types';
 import { FiMail, FiPlus, FiEye, FiEdit, FiUsers, FiMousePointer } from 'react-icons/fi';
+import { Card, CardBody, CardHeader, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Button } from '@heroui/react';
 
 async function getCampaigns(): Promise<any[]> {
   // Get all campaigns
@@ -41,91 +42,137 @@ export default async function CampaignsPage() {
 
   return (
     <div className="container">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <FiMail style={{ fontSize: '28px' }} />
-            Campaigns
-          </h1>
-          <p>Manage your email marketing campaigns</p>
-        </div>
-        <Link href="/campaigns/new" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FiPlus />
-          Create Campaign
-        </Link>
-      </div>
-
-      <div className="card">
-        {campaigns.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-            <FiMail style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.5 }} />
-            <p style={{ marginBottom: '20px' }}>No campaigns yet. Create your first campaign to get started.</p>
-            <Link href="/campaigns/new" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-              <FiPlus />
-              Create Campaign
-            </Link>
+      <Card className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl">
+        <CardHeader className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold flex items-center gap-3">
+              <FiMail size={32} />
+              Campaigns
+            </h1>
+            <p className="text-white/90 mt-1">Manage your email marketing campaigns</p>
           </div>
+          <Button
+            as={Link}
+            href="/campaigns/new"
+            color="secondary"
+            variant="solid"
+            startContent={<FiPlus />}
+            className="bg-white text-blue-600 font-semibold hover:bg-white/90"
+            size="lg"
+          >
+            Create Campaign
+          </Button>
+        </CardHeader>
+      </Card>
+
+      <Card className="shadow-lg">
+        {campaigns.length === 0 ? (
+          <CardBody className="text-center py-16">
+            <FiMail className="mx-auto mb-4 text-6xl text-gray-300" />
+            <p className="text-gray-600 mb-6 text-lg">No campaigns yet. Create your first campaign to get started.</p>
+            <Button
+              as={Link}
+              href="/campaigns/new"
+              color="primary"
+              variant="solid"
+              startContent={<FiPlus />}
+              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold"
+              size="lg"
+            >
+              Create Campaign
+            </Button>
+          </CardBody>
         ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Subject</th>
-                <th>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FiUsers />
-                    Recipients
-                  </span>
-                </th>
-                <th>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FiMail />
-                    Opened
-                  </span>
-                </th>
-                <th>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FiMousePointer />
-                    Clicked
-                  </span>
-                </th>
-                <th>Status</th>
-                <th>Created</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table aria-label="Campaigns table" selectionMode="none">
+            <TableHeader>
+              <TableColumn>NAME</TableColumn>
+              <TableColumn>SUBJECT</TableColumn>
+              <TableColumn>
+                <div className="flex items-center gap-2">
+                  <FiUsers />
+                  RECIPIENTS
+                </div>
+              </TableColumn>
+              <TableColumn>
+                <div className="flex items-center gap-2">
+                  <FiMail />
+                  OPENED
+                </div>
+              </TableColumn>
+              <TableColumn>
+                <div className="flex items-center gap-2">
+                  <FiMousePointer />
+                  CLICKED
+                </div>
+              </TableColumn>
+              <TableColumn>STATUS</TableColumn>
+              <TableColumn>CREATED</TableColumn>
+              <TableColumn>ACTIONS</TableColumn>
+            </TableHeader>
+            <TableBody>
               {campaigns.map((campaign) => (
-                <tr key={campaign.id}>
-                  <td style={{ fontWeight: '500' }}>{campaign.name}</td>
-                  <td>{campaign.subject}</td>
-                  <td>{campaign.recipient_count || 0}</td>
-                  <td>{campaign.opened_count || 0}</td>
-                  <td>{campaign.clicked_count || 0}</td>
-                  <td>
-                    <span className={`badge badge-${campaign.status === 'sent' ? 'success' : 'warning'}`}>
+                <TableRow key={campaign.id}>
+                  <TableCell>
+                    <span className="font-semibold text-gray-900">{campaign.name}</span>
+                  </TableCell>
+                  <TableCell className="text-gray-600">{campaign.subject}</TableCell>
+                  <TableCell>
+                    <Chip color="primary" variant="flat" size="sm">
+                      {campaign.recipient_count || 0}
+                    </Chip>
+                  </TableCell>
+                  <TableCell>
+                    <Chip color="success" variant="flat" size="sm">
+                      {campaign.opened_count || 0}
+                    </Chip>
+                  </TableCell>
+                  <TableCell>
+                    <Chip color="warning" variant="flat" size="sm">
+                      {campaign.clicked_count || 0}
+                    </Chip>
+                  </TableCell>
+                  <TableCell>
+                    <Chip 
+                      color={campaign.status === 'sent' ? 'success' : 'warning'} 
+                      variant="flat"
+                      size="sm"
+                    >
                       {campaign.status}
-                    </span>
-                  </td>
-                  <td>{new Date(campaign.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <Link href={`/campaigns/${campaign.id}`} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        <FiEye />
+                    </Chip>
+                  </TableCell>
+                  <TableCell className="text-gray-600">
+                    {new Date(campaign.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        as={Link}
+                        href={`/campaigns/${campaign.id}`}
+                        size="sm"
+                        variant="light"
+                        startContent={<FiEye />}
+                        className="text-blue-600"
+                      >
                         View
-                      </Link>
-                      <Link href={`/campaigns/${campaign.id}/edit`} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        <FiEdit />
+                      </Button>
+                      <Button
+                        as={Link}
+                        href={`/campaigns/${campaign.id}/edit`}
+                        size="sm"
+                        variant="light"
+                        startContent={<FiEdit />}
+                        className="text-purple-600"
+                      >
                         Edit
-                      </Link>
+                      </Button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

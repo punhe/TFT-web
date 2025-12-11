@@ -13,6 +13,7 @@ import {
   FiActivity,
   FiInfo
 } from 'react-icons/fi';
+import { Card, CardBody, CardHeader, Chip, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
 
 async function getCampaign(id: string): Promise<Campaign | null> {
   const { data: campaign, error } = await db
@@ -51,153 +52,210 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
     clicked: recipients.filter(r => r.clicked_at).length,
   };
 
+  const statCards = [
+    { 
+      title: 'Total Recipients', 
+      value: stats.total, 
+      icon: FiUsers, 
+      gradient: 'from-blue-500 to-cyan-500'
+    },
+    { 
+      title: 'Sent', 
+      value: stats.sent, 
+      icon: FiSend, 
+      gradient: 'from-purple-500 to-pink-500'
+    },
+    { 
+      title: 'Opened', 
+      value: stats.opened, 
+      icon: FiMail, 
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    { 
+      title: 'Clicked', 
+      value: stats.clicked, 
+      icon: FiMousePointer, 
+      gradient: 'from-orange-500 to-red-500'
+    },
+    { 
+      title: 'Open Rate', 
+      value: `${stats.sent > 0 ? ((stats.opened / stats.sent) * 100).toFixed(1) : 0}%`, 
+      icon: FiTrendingUp, 
+      gradient: 'from-indigo-500 to-blue-500'
+    },
+    { 
+      title: 'Click Rate', 
+      value: `${stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(1) : 0}%`, 
+      icon: FiActivity, 
+      gradient: 'from-violet-500 to-purple-500'
+    },
+  ];
+
   return (
     <div className="container">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          <h1>{campaign.name}</h1>
-          <p>{campaign.subject}</p>
-        </div>
-        <Link href="/campaigns" className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FiArrowLeft />
-          Back to Campaigns
-        </Link>
-      </div>
+      <Card className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl">
+        <CardHeader className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">{campaign.name}</h1>
+            <p className="text-white/90 mt-1">{campaign.subject}</p>
+          </div>
+          <Button
+            as={Link}
+            href="/campaigns"
+            variant="light"
+            startContent={<FiArrowLeft />}
+            className="text-white hover:bg-white/20"
+            size="lg"
+          >
+            Back to Campaigns
+          </Button>
+        </CardHeader>
+      </Card>
 
       <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-card-header">
-            <h3>
-              <FiUsers className="stat-card-icon" />
-              Total Recipients
-            </h3>
-          </div>
-          <div className="value">{stats.total}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-header">
-            <h3>
-              <FiSend className="stat-card-icon" />
-              Sent
-            </h3>
-          </div>
-          <div className="value">{stats.sent}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-header">
-            <h3>
-              <FiMail className="stat-card-icon" />
-              Opened
-            </h3>
-          </div>
-          <div className="value">{stats.opened}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-header">
-            <h3>
-              <FiMousePointer className="stat-card-icon" />
-              Clicked
-            </h3>
-          </div>
-          <div className="value">{stats.clicked}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-header">
-            <h3>
-              <FiTrendingUp className="stat-card-icon" />
-              Open Rate
-            </h3>
-          </div>
-          <div className="value">{stats.sent > 0 ? ((stats.opened / stats.sent) * 100).toFixed(1) : 0}%</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-header">
-            <h3>
-              <FiActivity className="stat-card-icon" />
-              Click Rate
-            </h3>
-          </div>
-          <div className="value">{stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(1) : 0}%</div>
-        </div>
+        {statCards.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <Card 
+              key={index}
+              className="hover:scale-105 transition-transform duration-200 shadow-lg border-none"
+            >
+              <CardBody className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`p-3 rounded-lg bg-gradient-to-br ${stat.gradient} text-white`}>
+                    <Icon size={24} />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-600 font-medium">{stat.title}</p>
+                  <p className={`text-3xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+                    {stat.value}
+                  </p>
+                </div>
+              </CardBody>
+            </Card>
+          );
+        })}
       </div>
 
-      <div className="card">
-        <h2 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FiInfo />
-          Campaign Details
-        </h2>
-        <div style={{ marginBottom: '15px' }}>
-          <strong>From:</strong> {campaign.from_name} &lt;{campaign.from_email}&gt;
-        </div>
-        <div style={{ marginBottom: '15px' }}>
-          <strong>Subject:</strong> {campaign.subject}
-        </div>
-        <div style={{ marginBottom: '15px' }}>
-          <strong>Status:</strong> <span className={`badge badge-${campaign.status === 'sent' ? 'success' : 'warning'}`}>{campaign.status}</span>
-        </div>
-        <div style={{ marginBottom: '15px' }}>
-          <strong>Created:</strong> {new Date(campaign.created_at).toLocaleString()}
-        </div>
-        <div style={{ marginTop: '20px', padding: '20px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-          <strong style={{ display: 'block', marginBottom: '12px', color: '#374151' }}>Preview:</strong>
-          <div 
-            dangerouslySetInnerHTML={{ __html: campaign.html_content }} 
-            style={{ 
-              marginTop: '10px',
-              padding: '20px',
-              background: 'white',
-              borderRadius: '6px',
-              border: '1px solid #e5e7eb',
-              minHeight: '200px'
-            }} 
-          />
-        </div>
-      </div>
+      <Card className="mt-6 shadow-lg">
+        <CardHeader className="flex items-center gap-2">
+          <FiInfo className="text-xl" />
+          <h2 className="text-xl font-semibold">Campaign Details</h2>
+        </CardHeader>
+        <CardBody className="space-y-4">
+          <div>
+            <span className="text-sm font-semibold text-gray-600">From:</span>
+            <p className="text-gray-900">{campaign.from_name} &lt;{campaign.from_email}&gt;</p>
+          </div>
+          <div>
+            <span className="text-sm font-semibold text-gray-600">Subject:</span>
+            <p className="text-gray-900">{campaign.subject}</p>
+          </div>
+          <div>
+            <span className="text-sm font-semibold text-gray-600">Status:</span>
+            <div className="mt-1">
+              <Chip 
+                color={campaign.status === 'sent' ? 'success' : 'warning'} 
+                variant="flat"
+                size="lg"
+              >
+                {campaign.status}
+              </Chip>
+            </div>
+          </div>
+          <div>
+            <span className="text-sm font-semibold text-gray-600">Created:</span>
+            <p className="text-gray-900">{new Date(campaign.created_at).toLocaleString()}</p>
+          </div>
+          <div className="mt-6 p-5 bg-gray-50 rounded-lg border border-gray-200">
+            <strong className="block mb-3 text-gray-700">Preview:</strong>
+            <div 
+              className="p-5 bg-white rounded-lg border border-gray-200 min-h-[200px]"
+              dangerouslySetInnerHTML={{ __html: campaign.html_content }} 
+            />
+          </div>
+        </CardBody>
+      </Card>
 
-      <div className="card">
-        <h2 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FiSend />
-          Send Email
-        </h2>
-        <SendEmailForm campaignId={campaign.id} />
-      </div>
+      <Card className="mt-6 shadow-lg">
+        <CardHeader className="flex items-center gap-2">
+          <FiSend className="text-xl" />
+          <h2 className="text-xl font-semibold">Send Email</h2>
+        </CardHeader>
+        <CardBody>
+          <SendEmailForm campaignId={campaign.id} />
+        </CardBody>
+      </Card>
 
-      <div className="card">
-        <h2 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FiUsers />
-          Recipients
-        </h2>
-        {recipients.length === 0 ? (
-          <p style={{ color: '#666' }}>No recipients added yet. Use the form above to send emails.</p>
-        ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Sent</th>
-                <th>Opened</th>
-                <th>Clicked</th>
-                <th>Open Count</th>
-                <th>Click Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recipients.map((recipient) => (
-                <tr key={recipient.id}>
-                  <td>{recipient.email}</td>
-                  <td>{recipient.name || '-'}</td>
-                  <td>{recipient.sent_at ? new Date(recipient.sent_at).toLocaleString() : '-'}</td>
-                  <td>{recipient.opened_at ? new Date(recipient.opened_at).toLocaleString() : '-'}</td>
-                  <td>{recipient.clicked_at ? new Date(recipient.clicked_at).toLocaleString() : '-'}</td>
-                  <td>{recipient.opened_count}</td>
-                  <td>{recipient.clicked_count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      <Card className="mt-6 shadow-lg">
+        <CardHeader className="flex items-center gap-2">
+          <FiUsers className="text-xl" />
+          <h2 className="text-xl font-semibold">Recipients</h2>
+        </CardHeader>
+        <CardBody>
+          {recipients.length === 0 ? (
+            <p className="text-gray-600 text-center py-8">No recipients added yet. Use the form above to send emails.</p>
+          ) : (
+            <Table aria-label="Recipients table">
+              <TableHeader>
+                <TableColumn>EMAIL</TableColumn>
+                <TableColumn>NAME</TableColumn>
+                <TableColumn>SENT</TableColumn>
+                <TableColumn>OPENED</TableColumn>
+                <TableColumn>CLICKED</TableColumn>
+                <TableColumn>OPEN COUNT</TableColumn>
+                <TableColumn>CLICK COUNT</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {recipients.map((recipient) => (
+                  <TableRow key={recipient.id}>
+                    <TableCell className="font-medium">{recipient.email}</TableCell>
+                    <TableCell>{recipient.name || '-'}</TableCell>
+                    <TableCell>
+                      {recipient.sent_at ? (
+                        <Chip color="primary" variant="flat" size="sm">
+                          {new Date(recipient.sent_at).toLocaleString()}
+                        </Chip>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {recipient.opened_at ? (
+                        <Chip color="success" variant="flat" size="sm">
+                          {new Date(recipient.opened_at).toLocaleString()}
+                        </Chip>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {recipient.clicked_at ? (
+                        <Chip color="warning" variant="flat" size="sm">
+                          {new Date(recipient.clicked_at).toLocaleString()}
+                        </Chip>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Chip color="success" variant="flat" size="sm">
+                        {recipient.opened_count}
+                      </Chip>
+                    </TableCell>
+                    <TableCell>
+                      <Chip color="warning" variant="flat" size="sm">
+                        {recipient.clicked_count}
+                      </Chip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardBody>
+      </Card>
     </div>
   );
 }

@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         { 
           error: 'Supabase not configured',
           details: error.message,
-          hint: 'Please create a .env.local file with your Supabase credentials. See SUPABASE_SETUP.md for instructions.'
+          hint: 'Please create a .env.local file with your Supabase credentials. See README.md for setup instructions.'
         },
         { status: 500 }
       );

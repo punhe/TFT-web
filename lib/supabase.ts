@@ -11,7 +11,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
     'NEXT_PUBLIC_SUPABASE_URL=your_supabase_url\n' +
     'NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key\n' +
     'SUPABASE_SERVICE_ROLE_KEY=your_service_role_key\n\n' +
-    'See SUPABASE_SETUP.md for instructions.'
+        'See README.md for setup instructions.'
   );
 }
 

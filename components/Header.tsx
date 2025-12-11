@@ -12,10 +12,11 @@ import {
   FiCheckCircle
 } from 'react-icons/fi';
 import { useState } from 'react';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Button } from '@heroui/react';
 
 export default function Header() {
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
     { href: '/', label: 'Dashboard', icon: FiHome },
@@ -25,50 +26,104 @@ export default function Header() {
   ];
 
   return (
-    <header className="app-header">
-      <div className="header-container">
-        <div className="header-brand">
-          <FiMail className="brand-icon" />
-          <span className="brand-text">Email Tracker</span>
-        </div>
+    <Navbar 
+      onMenuOpenChange={setIsMenuOpen}
+      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+      maxWidth="xl"
+      isBordered
+    >
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden text-white"
+        />
+        <NavbarBrand>
+          <img 
+            src="/assests/favicon.ico" 
+            alt="Punhe CRM" 
+            className="w-8 h-8 mr-2"
+          />
+          <p className="font-bold text-white text-lg">Punhe CRM</p>
+        </NavbarBrand>
+      </NavbarContent>
 
-        <button 
-          className="mobile-menu-toggle"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
-
-        <nav className={`header-nav ${mobileMenuOpen ? 'nav-open' : ''}`}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href || 
-              (item.href !== '/' && pathname?.startsWith(item.href));
-            
-            return (
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href || 
+            (item.href !== '/' && pathname?.startsWith(item.href));
+          
+          return (
+            <NavbarItem key={item.href} isActive={isActive}>
               <Link
-                key={item.href}
                 href={item.href}
-                className={`nav-link ${isActive ? 'active' : ''}`}
-                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  isActive 
+                    ? 'bg-white/20 text-white font-semibold' 
+                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                }`}
               >
-                <Icon className="nav-icon" />
+                <Icon size={18} />
                 <span>{item.label}</span>
               </Link>
-            );
-          })}
-          <Link
+            </NavbarItem>
+          );
+        })}
+      </NavbarContent>
+
+      <NavbarContent justify="end">
+        <NavbarItem className="hidden lg:flex">
+          <Button
+            as={Link}
             href="/campaigns/new"
-            className="nav-link nav-link-primary"
-            onClick={() => setMobileMenuOpen(false)}
+            color="secondary"
+            variant="solid"
+            startContent={<FiPlus />}
+            className="bg-white text-blue-600 font-semibold hover:bg-white/90"
           >
-            <FiPlus className="nav-icon" />
-            <span>New Campaign</span>
-          </Link>
-        </nav>
-      </div>
-    </header>
+            New Campaign
+          </Button>
+        </NavbarItem>
+      </NavbarContent>
+
+      <NavbarMenu className="bg-gradient-to-b from-blue-600 to-purple-600">
+        {navItems.map((item, index) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href || 
+            (item.href !== '/' && pathname?.startsWith(item.href));
+          
+          return (
+            <NavbarMenuItem key={`${item.href}-${index}`} isActive={isActive}>
+              <Link
+                href={item.href}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  isActive 
+                    ? 'bg-white/20 text-white font-semibold' 
+                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Icon size={20} />
+                <span>{item.label}</span>
+              </Link>
+            </NavbarMenuItem>
+          );
+        })}
+        <NavbarMenuItem>
+          <Button
+            as={Link}
+            href="/campaigns/new"
+            color="secondary"
+            variant="solid"
+            startContent={<FiPlus />}
+            className="w-full bg-white text-blue-600 font-semibold hover:bg-white/90 mt-2"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            New Campaign
+          </Button>
+        </NavbarMenuItem>
+      </NavbarMenu>
+    </Navbar>
   );
 }
 

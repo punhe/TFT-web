@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Input, Button, Alert } from '@heroui/react';
 
 export default function SendEmailForm({ campaignId }: { campaignId: string }) {
   const [email, setEmail] = useState('');
@@ -49,46 +50,55 @@ export default function SendEmailForm({ campaignId }: { campaignId: string }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-        <div className="form-group" style={{ marginBottom: 0 }}>
-          <label>Recipient Email</label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="recipient@example.com"
-          />
-        </div>
-        <div className="form-group" style={{ marginBottom: 0 }}>
-          <label>Recipient Name (Optional)</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="John Doe"
-          />
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          label="Recipient Email"
+          type="email"
+          placeholder="recipient@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          isRequired
+          variant="bordered"
+          size="lg"
+          classNames={{
+            input: "text-lg",
+            label: "text-gray-700 font-semibold"
+          }}
+        />
+        <Input
+          label="Recipient Name (Optional)"
+          placeholder="John Doe"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          variant="bordered"
+          size="lg"
+          classNames={{
+            input: "text-lg",
+            label: "text-gray-700 font-semibold"
+          }}
+        />
       </div>
 
       {message && (
-        <div
-          style={{
-            padding: '12px',
-            borderRadius: '6px',
-            marginBottom: '15px',
-            background: message.type === 'success' ? '#d4edda' : '#f8d7da',
-            color: message.type === 'success' ? '#155724' : '#721c24',
-          }}
+        <Alert
+          color={message.type === 'success' ? 'success' : 'danger'}
+          variant="flat"
+          title={message.type === 'success' ? 'Success' : 'Error'}
         >
           {message.text}
-        </div>
+        </Alert>
       )}
 
-      <button type="submit" className="btn btn-primary" disabled={loading}>
+      <Button
+        type="submit"
+        color="primary"
+        size="lg"
+        isLoading={loading}
+        className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold"
+      >
         {loading ? 'Sending...' : 'Send Email'}
-      </button>
+      </Button>
     </form>
   );
 }
