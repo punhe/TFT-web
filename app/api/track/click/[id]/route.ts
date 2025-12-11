@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(
   request: NextRequest,
@@ -17,23 +16,45 @@ export async function GET(
     }
 
     // Get recipient
-    const recipient = db.prepare('SELECT * FROM recipients WHERE id = ?').get(recipientId) as any;
+    const { data: recipients } = await db
+      .from('recipients')
+      .select('*')
+      .eq('id', recipientId)
+      .limit(1);
+    
+    const recipient = recipients && recipients.length > 0 ? recipients[0] : null;
     
     if (recipient) {
-      // Update recipient click tracking
       const now = new Date().toISOString();
+      
+      // Update recipient click tracking
       if (!recipient.clicked_at) {
-        db.prepare('UPDATE recipients SET clicked_at = ?, clicked_count = clicked_count + 1 WHERE id = ?').run(now, recipientId);
+        await db
+          .from('recipients')
+          .update({
+            clicked_at: now,
+            clicked_count: (recipient.clicked_count || 0) + 1,
+          })
+          .eq('id', recipientId);
       } else {
-        db.prepare('UPDATE recipients SET clicked_count = clicked_count + 1 WHERE id = ?').run(recipientId);
+        await db
+          .from('recipients')
+          .update({
+            clicked_count: (recipient.clicked_count || 0) + 1,
+          })
+          .eq('id', recipientId);
       }
 
       // Log tracking event
-      const eventId = uuidv4();
-      db.prepare(`
-        INSERT INTO tracking_events (id, recipient_id, event_type, link_url, ip_address, user_agent)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `).run(eventId, recipientId, 'click', url, ip, userAgent);
+      await db
+        .from('tracking_events')
+        .insert({
+          recipient_id: recipientId,
+          event_type: 'click',
+          link_url: url,
+          ip_address: ip,
+          user_agent: userAgent,
+        });
     }
 
     // Redirect to original URL

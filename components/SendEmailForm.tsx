@@ -27,7 +27,7 @@ export default function SendEmailForm({ campaignId }: { campaignId: string }) {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Email sent successfully!' });
+        setMessage({ type: 'success', text: data.message || 'Email sent successfully!' });
         setEmail('');
         setName('');
         // Refresh page after 2 seconds
@@ -35,10 +35,14 @@ export default function SendEmailForm({ campaignId }: { campaignId: string }) {
           window.location.reload();
         }, 2000);
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to send email' });
+        const errorMsg = data.details 
+          ? `${data.error}: ${data.details}`
+          : data.error || 'Failed to send email';
+        setMessage({ type: 'error', text: errorMsg });
       }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Error sending email' });
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      setMessage({ type: 'error', text: error?.message || 'Error sending email. Please check the console.' });
     } finally {
       setLoading(false);
     }

@@ -29,11 +29,14 @@ export default function NewCampaignPage() {
         const campaign = await response.json();
         router.push(`/campaigns/${campaign.id}`);
       } else {
-        alert('Failed to create campaign');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        const errorMessage = errorData.details || errorData.error || 'Failed to create campaign';
+        const hint = errorData.hint ? `\n\n${errorData.hint}` : '';
+        alert(`${errorMessage}${hint}`);
       }
     } catch (error) {
       console.error('Error creating campaign:', error);
-      alert('Error creating campaign');
+      alert('Error creating campaign. Please check the console for details.');
     } finally {
       setLoading(false);
     }
@@ -41,8 +44,9 @@ export default function NewCampaignPage() {
 
   return (
     <div className="container">
-      <div className="header">
+      <div className="page-header">
         <h1>Create New Campaign</h1>
+        <p>Fill in the details below to create a new email marketing campaign</p>
       </div>
 
       <div className="card">
@@ -69,7 +73,7 @@ export default function NewCampaignPage() {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
             <div className="form-group">
               <label>From Name</label>
               <input

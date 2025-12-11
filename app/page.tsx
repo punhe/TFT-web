@@ -1,21 +1,32 @@
 import Link from 'next/link';
 import { CampaignStats } from '@/lib/types';
 import db from '@/lib/db';
+import { 
+  FiUsers, 
+  FiSend, 
+  FiMail, 
+  FiMousePointer, 
+  FiTrendingUp,
+  FiActivity
+} from 'react-icons/fi';
+
+interface RecipientStats {
+  id: string;
+  sent_at: string | null;
+  opened_at: string | null;
+  clicked_at: string | null;
+}
 
 async function getStats(): Promise<CampaignStats> {
-  const stats = db.prepare(`
-    SELECT 
-      COUNT(DISTINCT r.id) as total_recipients,
-      COUNT(DISTINCT CASE WHEN r.sent_at IS NOT NULL THEN r.id END) as sent_count,
-      COUNT(DISTINCT CASE WHEN r.opened_at IS NOT NULL THEN r.id END) as opened_count,
-      COUNT(DISTINCT CASE WHEN r.clicked_at IS NOT NULL THEN r.id END) as clicked_count
-    FROM recipients r
-  `).get() as any;
+  // Get all recipients
+  const { data: recipients } = await db
+    .from('recipients')
+    .select('id, sent_at, opened_at, clicked_at');
 
-  const total = stats.total_recipients || 0;
-  const sent = stats.sent_count || 0;
-  const opened = stats.opened_count || 0;
-  const clicked = stats.clicked_count || 0;
+  const total = recipients?.length || 0;
+  const sent = recipients?.filter((r: RecipientStats) => r.sent_at).length || 0;
+  const opened = recipients?.filter((r: RecipientStats) => r.opened_at).length || 0;
+  const clicked = recipients?.filter((r: RecipientStats) => r.clicked_at).length || 0;
 
   return {
     total_recipients: total,
@@ -32,43 +43,76 @@ export default async function Home() {
 
   return (
     <div className="container">
-      <div className="header">
+      <div className="page-header">
         <h1>Email Marketing Tracker</h1>
-        <p style={{ marginTop: '8px', color: '#666' }}>
+        <p>
           Track email opens and clicks for your marketing campaigns
         </p>
       </div>
 
       <div className="stats-grid">
         <div className="stat-card">
-          <h3>Total Recipients</h3>
+          <div className="stat-card-header">
+            <h3>
+              <FiUsers className="stat-card-icon" />
+              Total Recipients
+            </h3>
+          </div>
           <div className="value">{stats.total_recipients}</div>
         </div>
         <div className="stat-card">
-          <h3>Emails Sent</h3>
+          <div className="stat-card-header">
+            <h3>
+              <FiSend className="stat-card-icon" />
+              Emails Sent
+            </h3>
+          </div>
           <div className="value">{stats.sent_count}</div>
         </div>
         <div className="stat-card">
-          <h3>Opened</h3>
+          <div className="stat-card-header">
+            <h3>
+              <FiMail className="stat-card-icon" />
+              Opened
+            </h3>
+          </div>
           <div className="value">{stats.opened_count}</div>
         </div>
         <div className="stat-card">
-          <h3>Clicked</h3>
+          <div className="stat-card-header">
+            <h3>
+              <FiMousePointer className="stat-card-icon" />
+              Clicked
+            </h3>
+          </div>
           <div className="value">{stats.clicked_count}</div>
         </div>
         <div className="stat-card">
-          <h3>Open Rate</h3>
+          <div className="stat-card-header">
+            <h3>
+              <FiTrendingUp className="stat-card-icon" />
+              Open Rate
+            </h3>
+          </div>
           <div className="value">{stats.open_rate.toFixed(1)}%</div>
         </div>
         <div className="stat-card">
-          <h3>Click Rate</h3>
+          <div className="stat-card-header">
+            <h3>
+              <FiActivity className="stat-card-icon" />
+              Click Rate
+            </h3>
+          </div>
           <div className="value">{stats.click_rate.toFixed(1)}%</div>
         </div>
       </div>
 
       <div className="card">
-        <h2 style={{ marginBottom: '20px' }}>Quick Actions</h2>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <h2 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FiActivity style={{ fontSize: '20px' }} />
+          Quick Actions
+        </h2>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Link href="/campaigns" className="btn btn-primary">
             View All Campaigns
           </Link>

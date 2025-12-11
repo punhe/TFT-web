@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
-import { v4 as uuidv4 } from 'uuid';
 
 // 1x1 transparent pixel
 const PIXEL = Buffer.from(
@@ -18,23 +17,44 @@ export async function GET(
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
     // Get recipient
-    const recipient = db.prepare('SELECT * FROM recipients WHERE id = ?').get(recipientId) as any;
+    const { data: recipients } = await db
+      .from('recipients')
+      .select('*')
+      .eq('id', recipientId)
+      .limit(1);
+    
+    const recipient = recipients && recipients.length > 0 ? recipients[0] : null;
     
     if (recipient) {
-      // Update recipient open tracking
       const now = new Date().toISOString();
+      
+      // Update recipient open tracking
       if (!recipient.opened_at) {
-        db.prepare('UPDATE recipients SET opened_at = ?, opened_count = opened_count + 1 WHERE id = ?').run(now, recipientId);
+        await db
+          .from('recipients')
+          .update({
+            opened_at: now,
+            opened_count: (recipient.opened_count || 0) + 1,
+          })
+          .eq('id', recipientId);
       } else {
-        db.prepare('UPDATE recipients SET opened_count = opened_count + 1 WHERE id = ?').run(recipientId);
+        await db
+          .from('recipients')
+          .update({
+            opened_count: (recipient.opened_count || 0) + 1,
+          })
+          .eq('id', recipientId);
       }
 
       // Log tracking event
-      const eventId = uuidv4();
-      db.prepare(`
-        INSERT INTO tracking_events (id, recipient_id, event_type, ip_address, user_agent)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(eventId, recipientId, 'open', ip, userAgent);
+      await db
+        .from('tracking_events')
+        .insert({
+          recipient_id: recipientId,
+          event_type: 'open',
+          ip_address: ip,
+          user_agent: userAgent,
+        });
     }
 
     // Return 1x1 transparent pixel

@@ -1,20 +1,39 @@
 import Link from 'next/link';
 import db from '@/lib/db';
 import { Campaign } from '@/lib/types';
+import { FiMail, FiPlus, FiEye, FiEdit, FiUsers, FiMousePointer } from 'react-icons/fi';
 
-async function getCampaigns(): Promise<Campaign[]> {
-  const campaigns = db.prepare(`
-    SELECT c.*,
-           COUNT(r.id) as recipient_count,
-           COUNT(CASE WHEN r.opened_at IS NOT NULL THEN 1 END) as opened_count,
-           COUNT(CASE WHEN r.clicked_at IS NOT NULL THEN 1 END) as clicked_count
-    FROM campaigns c
-    LEFT JOIN recipients r ON c.id = r.campaign_id
-    GROUP BY c.id
-    ORDER BY c.created_at DESC
-  `).all() as any[];
+async function getCampaigns(): Promise<any[]> {
+  // Get all campaigns
+  const { data: campaigns } = await db
+    .from('campaigns')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  return campaigns;
+  if (!campaigns) return [];
+
+  // Get recipient stats for each campaign
+  const campaignsWithStats = await Promise.all(
+    campaigns.map(async (campaign) => {
+      const { data: recipients } = await db
+        .from('recipients')
+        .select('id, opened_at, clicked_at')
+        .eq('campaign_id', campaign.id);
+
+      const recipient_count = recipients?.length || 0;
+      const opened_count = recipients?.filter(r => r.opened_at).length || 0;
+      const clicked_count = recipients?.filter(r => r.clicked_at).length || 0;
+
+      return {
+        ...campaign,
+        recipient_count,
+        opened_count,
+        clicked_count,
+      };
+    })
+  );
+
+  return campaignsWithStats;
 }
 
 export default async function CampaignsPage() {
@@ -22,12 +41,16 @@ export default async function CampaignsPage() {
 
   return (
     <div className="container">
-      <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1>Campaigns</h1>
-          <p style={{ marginTop: '8px', color: '#666' }}>Manage your email marketing campaigns</p>
+          <h1 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <FiMail style={{ fontSize: '28px' }} />
+            Campaigns
+          </h1>
+          <p>Manage your email marketing campaigns</p>
         </div>
-        <Link href="/campaigns/new" className="btn btn-primary">
+        <Link href="/campaigns/new" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FiPlus />
           Create Campaign
         </Link>
       </div>
@@ -35,8 +58,10 @@ export default async function CampaignsPage() {
       <div className="card">
         {campaigns.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-            <p>No campaigns yet. Create your first campaign to get started.</p>
-            <Link href="/campaigns/new" className="btn btn-primary" style={{ marginTop: '20px', display: 'inline-block' }}>
+            <FiMail style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.5 }} />
+            <p style={{ marginBottom: '20px' }}>No campaigns yet. Create your first campaign to get started.</p>
+            <Link href="/campaigns/new" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <FiPlus />
               Create Campaign
             </Link>
           </div>
@@ -46,9 +71,24 @@ export default async function CampaignsPage() {
               <tr>
                 <th>Name</th>
                 <th>Subject</th>
-                <th>Recipients</th>
-                <th>Opened</th>
-                <th>Clicked</th>
+                <th>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FiUsers />
+                    Recipients
+                  </span>
+                </th>
+                <th>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FiMail />
+                    Opened
+                  </span>
+                </th>
+                <th>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FiMousePointer />
+                    Clicked
+                  </span>
+                </th>
                 <th>Status</th>
                 <th>Created</th>
                 <th>Actions</th>
@@ -57,7 +97,7 @@ export default async function CampaignsPage() {
             <tbody>
               {campaigns.map((campaign) => (
                 <tr key={campaign.id}>
-                  <td>{campaign.name}</td>
+                  <td style={{ fontWeight: '500' }}>{campaign.name}</td>
                   <td>{campaign.subject}</td>
                   <td>{campaign.recipient_count || 0}</td>
                   <td>{campaign.opened_count || 0}</td>
@@ -70,10 +110,12 @@ export default async function CampaignsPage() {
                   <td>{new Date(campaign.created_at).toLocaleDateString()}</td>
                   <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <Link href={`/campaigns/${campaign.id}`} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                      <Link href={`/campaigns/${campaign.id}`} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <FiEye />
                         View
                       </Link>
-                      <Link href={`/campaigns/${campaign.id}/edit`} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                      <Link href={`/campaigns/${campaign.id}/edit`} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <FiEdit />
                         Edit
                       </Link>
                     </div>

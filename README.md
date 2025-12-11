@@ -17,21 +17,39 @@ A fullstack Next.js application for tracking email marketing campaigns. Track em
 npm install
 ```
 
-2. Configure environment variables (create `.env.local`):
+2. **Set up Supabase Database** (Required):
+   - Follow the detailed guide in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
+   - Create a Supabase project
+   - Run the SQL schema from `supabase-schema.sql` in Supabase SQL Editor
+   - Get your API keys from Supabase dashboard
+
+3. Configure environment variables (create `.env.local` in the root directory):
 ```env
+# Supabase Configuration (Required)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+
+# Email Configuration (Optional, for sending emails)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
+
+# Base URL for tracking links
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
-3. Run the development server:
+   📖 **Setup Guides**:
+   - **Supabase Setup**: See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for database configuration
+   - **Gmail SMTP Setup**: See [GMAIL_SMTP_SETUP.md](./GMAIL_SMTP_SETUP.md) for email sending configuration
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## How It Works
 
@@ -42,7 +60,12 @@ When an email is sent, a 1x1 transparent pixel is embedded in the email. When th
 All links in the email are automatically replaced with tracking URLs that redirect to the original destination while logging the click event.
 
 ### Database
-The application uses SQLite for data storage. The database file (`email_tracker.db`) is automatically created on first run.
+The application uses **Supabase** (PostgreSQL) for data storage. You need to:
+1. Create a Supabase project
+2. Run the SQL schema from `supabase-schema.sql` 
+3. Configure your Supabase credentials in `.env.local`
+
+See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed instructions.
 
 ## Usage
 

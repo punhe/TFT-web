@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { sendTrackedEmail } from '@/lib/email';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,8 +15,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Get campaign
-    const campaign = db.prepare('SELECT * FROM campaigns WHERE id = ?').get(campaign_id) as any;
-    if (!campaign) {
+    const { data: campaign, error: campaignError } = await db
+      .from('campaigns')
+      .select('*')
+      .eq('id', campaign_id)
+      .single();
+
+    if (campaignError || !campaign) {
       return NextResponse.json(
         { error: 'Campaign not found' },
         { status: 404 }
@@ -25,16 +29,36 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if recipient already exists
-    let recipient = db.prepare('SELECT * FROM recipients WHERE campaign_id = ? AND email = ?').get(campaign_id, email) as any;
+    const { data: existingRecipients, error: checkError } = await db
+      .from('recipients')
+      .select('*')
+      .eq('campaign_id', campaign_id)
+      .eq('email', email)
+      .limit(1);
 
-    if (!recipient) {
+    let recipient;
+    if (existingRecipients && existingRecipients.length > 0) {
+      recipient = existingRecipients[0];
+    } else {
       // Create new recipient
-      const recipientId = uuidv4();
-      db.prepare(`
-        INSERT INTO recipients (id, campaign_id, email, name)
-        VALUES (?, ?, ?, ?)
-      `).run(recipientId, campaign_id, email, name || null);
-      recipient = { id: recipientId, campaign_id, email, name: name || null };
+      const { data: newRecipient, error: recipientError } = await db
+        .from('recipients')
+        .insert({
+          campaign_id,
+          email,
+          name: name || null,
+        })
+        .select()
+        .single();
+
+      if (recipientError) {
+        console.error('Error creating recipient:', recipientError);
+        return NextResponse.json(
+          { error: 'Failed to create recipient', details: recipientError.message },
+          { status: 500 }
+        );
+      }
+      recipient = newRecipient;
     }
 
     // Send email
@@ -50,10 +74,16 @@ export async function POST(request: NextRequest) {
 
     if (result.success) {
       // Update recipient sent_at
-      db.prepare('UPDATE recipients SET sent_at = CURRENT_TIMESTAMP WHERE id = ?').run(recipient.id);
+      await db
+        .from('recipients')
+        .update({ sent_at: new Date().toISOString() })
+        .eq('id', recipient.id);
       
       // Update campaign status
-      db.prepare('UPDATE campaigns SET status = ? WHERE id = ?').run('sent', campaign_id);
+      await db
+        .from('campaigns')
+        .update({ status: 'sent' })
+        .eq('id', campaign_id);
 
       return NextResponse.json({ success: true, message: 'Email sent successfully' });
     } else {
