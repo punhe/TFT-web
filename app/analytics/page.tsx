@@ -142,49 +142,49 @@ export default async function AnalyticsPage() {
       title: 'Total Recipients', 
       value: overall.total_recipients || 0, 
       icon: <FiUsers size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Emails Sent', 
       value: overall.sent_count || 0, 
       icon: <FiSend size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Unique Opens', 
       value: overall.opened_count || 0, 
       icon: <FiMail size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-emerald-50 to-teal-50'
     },
     { 
       title: 'Total Opens', 
       value: overall.total_opens || 0, 
       icon: <FiMail size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-emerald-50 to-teal-50'
     },
     { 
       title: 'Unique Clicks', 
       value: overall.clicked_count || 0, 
       icon: <FiMousePointer size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-amber-50 to-orange-50'
     },
     { 
       title: 'Total Clicks', 
       value: overall.total_clicks || 0, 
       icon: <FiMousePointer size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-amber-50 to-orange-50'
     },
     { 
       title: 'Open Rate', 
       value: `${openRate}%`, 
       icon: <FiTrendingUp size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Click Rate', 
       value: `${clickRate}%`, 
       icon: <FiActivity size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
   ];
 

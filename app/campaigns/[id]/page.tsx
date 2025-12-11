@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import db from '@/lib/db';
 import { Campaign, Recipient } from '@/lib/types';
 import { notFound } from 'next/navigation';
@@ -53,37 +55,37 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
       title: 'Total Recipients', 
       value: stats.total, 
       icon: <FiUsers size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Sent', 
       value: stats.sent, 
       icon: <FiSend size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Opened', 
       value: stats.opened, 
       icon: <FiMail size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-emerald-50 to-teal-50'
     },
     { 
       title: 'Clicked', 
       value: stats.clicked, 
       icon: <FiMousePointer size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-amber-50 to-orange-50'
     },
     { 
       title: 'Open Rate', 
       value: `${stats.sent > 0 ? ((stats.opened / stats.sent) * 100).toFixed(1) : 0}%`, 
       icon: <FiTrendingUp size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Click Rate', 
       value: `${stats.sent > 0 ? ((stats.clicked / stats.sent) * 100).toFixed(1) : 0}%`, 
       icon: <FiActivity size={24} />, 
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
   ];
 

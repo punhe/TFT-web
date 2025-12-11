@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-[var(--bg)] text-slate-900">
         <Providers>
           <Header />
           <main className="main-content">

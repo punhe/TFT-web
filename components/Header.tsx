@@ -29,7 +29,7 @@ export default function Header() {
   return (
     <Navbar 
       onMenuOpenChange={setIsMenuOpen}
-      className="bg-white text-gray-900 shadow-sm border-b border-gray-200"
+      className="bg-white/90 backdrop-blur-md text-gray-900 shadow-sm border-b border-gray-200"
       maxWidth="xl"
       isBordered
     >
@@ -38,16 +38,19 @@ export default function Header() {
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden text-gray-900"
         />
-        <NavbarBrand>
+        <NavbarBrand as={Link} href="/" className="cursor-pointer">
           <Image 
             src="/assests/favicon.ico" 
             alt="Punhe CRM" 
-            width={32}
-            height={32}
-            className="w-8 h-8 mr-2"
+            width={120}
+            height={120}
+            className="w-[120px] h-[120px] mr-4 rounded-2xl shadow-sm"
             priority
           />
-          <p className="font-bold text-lg text-gray-900">Punhe CRM</p>
+          <div className="hidden sm:block">
+            <p className="font-bold text-xl text-gray-900 leading-tight">Punhe CRM</p>
+            <p className="text-xs text-gray-500">Email journeys that feel human</p>
+          </div>
         </NavbarBrand>
       </NavbarContent>
 
@@ -63,8 +66,8 @@ export default function Header() {
                 href={item.href}
                 className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-colors ${
                   isActive 
-                    ? 'bg-gray-100 text-gray-900 font-semibold' 
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-slate-100 text-gray-900 font-semibold border border-slate-200 shadow-sm' 
+                    : 'text-gray-600 hover:bg-slate-50 hover:text-gray-900'
                 }`}
               >
                 <Icon size={18} />
@@ -83,14 +86,14 @@ export default function Header() {
             color="primary"
             variant="solid"
             startContent={<FiPlus />}
-            className="font-semibold rounded-full px-4"
+            className="font-semibold rounded-full px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
           >
             New Campaign
           </Button>
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarMenu className="bg-white">
+      <NavbarMenu className="bg-white/95 backdrop-blur-md">
         {navItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || 
@@ -102,8 +105,8 @@ export default function Header() {
                 href={item.href}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                   isActive 
-                    ? 'bg-gray-100 text-gray-900 font-semibold' 
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-slate-100 text-gray-900 font-semibold' 
+                    : 'text-gray-700 hover:bg-slate-50 hover:text-gray-900'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -120,7 +123,7 @@ export default function Header() {
             color="primary"
             variant="solid"
             startContent={<FiPlus />}
-            className="w-full font-semibold mt-2"
+            className="w-full font-semibold mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
             onClick={() => setIsMenuOpen(false)}
           >
             New Campaign

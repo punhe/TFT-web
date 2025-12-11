@@ -62,9 +62,10 @@ export default function SendEmailForm({ campaignId }: { campaignId: string }) {
           variant="bordered"
           size="lg"
           classNames={{
-            input: "text-lg",
+            input: "text-base",
             label: "text-gray-700 font-semibold"
           }}
+          description="We will only use this address for this send."
         />
         <Input
           label="Recipient Name (Optional)"
@@ -74,9 +75,10 @@ export default function SendEmailForm({ campaignId }: { campaignId: string }) {
           variant="bordered"
           size="lg"
           classNames={{
-            input: "text-lg",
+            input: "text-base",
             label: "text-gray-700 font-semibold"
           }}
+          description="Personalize the greeting with a first name."
         />
       </div>
 
@@ -90,15 +92,18 @@ export default function SendEmailForm({ campaignId }: { campaignId: string }) {
         </Alert>
       )}
 
-      <Button
-        type="submit"
-        color="primary"
-        size="lg"
-        isLoading={loading}
-        className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold"
-      >
-        {loading ? 'Sending...' : 'Send Email'}
-      </Button>
+      <div className="flex gap-3 flex-wrap items-center">
+        <Button
+          type="submit"
+          color="primary"
+          size="md"
+          isLoading={loading}
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl"
+        >
+          {loading ? 'Sending...' : 'Send email'}
+        </Button>
+        <p className="text-sm text-slate-500">We will refresh the stats once delivery is confirmed.</p>
+      </div>
     </form>
   );
 }

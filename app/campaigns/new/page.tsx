@@ -45,16 +45,14 @@ export default function NewCampaignPage() {
 
   return (
     <div className="container">
-      <Card className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl">
-        <CardHeader>
-          <h1 className="text-3xl font-bold">Create New Campaign</h1>
+      <Card className="mb-6 bg-white/95 shadow-sm border border-slate-200 rounded-2xl">
+        <CardHeader className="flex flex-col gap-2">
+          <h1 className="text-3xl font-bold text-slate-900">Create new campaign</h1>
+          <p className="text-slate-600">Set the basics so you can start sending in minutes.</p>
         </CardHeader>
-        <CardBody className="pt-0">
-          <p className="text-white/90">Fill in the details below to create a new email marketing campaign</p>
-        </CardBody>
       </Card>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-sm border border-slate-200 rounded-2xl bg-white/95">
         <CardBody>
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
@@ -66,7 +64,7 @@ export default function NewCampaignPage() {
               variant="bordered"
               size="lg"
               classNames={{
-                input: "text-lg",
+                input: "text-base",
                 label: "text-gray-700 font-semibold"
               }}
             />
@@ -80,7 +78,7 @@ export default function NewCampaignPage() {
               variant="bordered"
               size="lg"
               classNames={{
-                input: "text-lg",
+                input: "text-base",
                 label: "text-gray-700 font-semibold"
               }}
             />
@@ -95,7 +93,7 @@ export default function NewCampaignPage() {
                 variant="bordered"
                 size="lg"
                 classNames={{
-                  input: "text-lg",
+                  input: "text-base",
                   label: "text-gray-700 font-semibold"
                 }}
               />
@@ -110,7 +108,7 @@ export default function NewCampaignPage() {
                 variant="bordered"
                 size="lg"
                 classNames={{
-                  input: "text-lg",
+                  input: "text-base",
                   label: "text-gray-700 font-semibold"
                 }}
               />
@@ -136,16 +134,16 @@ export default function NewCampaignPage() {
                 color="primary"
                 size="lg"
                 isLoading={loading}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl"
               >
-                {loading ? 'Creating...' : 'Create Campaign'}
+                {loading ? 'Creating...' : 'Create campaign'}
               </Button>
               <Button
                 type="button"
                 variant="bordered"
                 size="lg"
                 onPress={() => router.back()}
-                className="font-semibold"
+                className="font-semibold rounded-xl border-slate-200"
               >
                 Cancel
               </Button>

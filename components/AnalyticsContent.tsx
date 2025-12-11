@@ -66,7 +66,7 @@ export default function AnalyticsContent({
     <>
       <DashboardHeader
         title="Analytics Dashboard"
-        description="Detailed tracking and performance metrics"
+        description="Understand how your audience engages across every campaign"
       />
 
       <div className="stats-grid">
@@ -83,20 +83,20 @@ export default function AnalyticsContent({
 
       {campaigns.length > 0 && (
         <>
-          <Card className="mt-6 shadow-lg">
+          <Card className="mt-6 shadow-sm border border-slate-200 rounded-2xl">
             <CardHeader className="flex items-center gap-2">
-              <FiBarChart2 className="text-xl" />
-              <h2 className="text-xl font-semibold">Campaign Performance Chart</h2>
+              <FiBarChart2 className="text-xl text-blue-600" />
+              <h2 className="text-xl font-semibold text-slate-900">Campaign performance chart</h2>
             </CardHeader>
             <CardBody>
               <CampaignChart data={campaignChartData} />
             </CardBody>
           </Card>
 
-          <Card className="mt-6 shadow-lg">
+          <Card className="mt-6 shadow-sm border border-slate-200 rounded-2xl">
             <CardHeader className="flex items-center gap-2">
-              <FiTrendingUp className="text-xl" />
-              <h2 className="text-xl font-semibold">Open & Click Rates by Campaign</h2>
+              <FiTrendingUp className="text-xl text-blue-600" />
+              <h2 className="text-xl font-semibold text-slate-900">Open & click rates by campaign</h2>
             </CardHeader>
             <CardBody>
               <RateChart data={rateChartData} />
@@ -105,16 +105,16 @@ export default function AnalyticsContent({
         </>
       )}
 
-      <Card className="mt-6 shadow-lg">
+      <Card className="mt-6 shadow-sm border border-slate-200 rounded-2xl">
         <CardHeader className="flex items-center gap-2">
-          <FiBarChart2 className="text-xl" />
-          <h2 className="text-xl font-semibold">Campaign Performance</h2>
+          <FiBarChart2 className="text-xl text-blue-600" />
+          <h2 className="text-xl font-semibold text-slate-900">Campaign performance</h2>
         </CardHeader>
         <CardBody>
           {campaigns.length === 0 ? (
             <p className="text-gray-600 text-center py-8">No campaigns yet.</p>
           ) : (
-            <Table aria-label="Campaign performance table">
+            <Table aria-label="Campaign performance table" className="table-soft">
               <TableHeader>
                 <TableColumn>CAMPAIGN</TableColumn>
                 <TableColumn>RECIPIENTS</TableColumn>
@@ -175,16 +175,16 @@ export default function AnalyticsContent({
         </CardBody>
       </Card>
 
-      <Card className="mt-6 shadow-lg">
+      <Card className="mt-6 shadow-sm border border-slate-200 rounded-2xl">
         <CardHeader className="flex items-center gap-2">
-          <FiClock className="text-xl" />
-          <h2 className="text-xl font-semibold">Recent Tracking Events</h2>
+          <FiClock className="text-xl text-blue-600" />
+          <h2 className="text-xl font-semibold text-slate-900">Recent tracking events</h2>
         </CardHeader>
         <CardBody>
           {recentEvents.length === 0 ? (
             <p className="text-gray-600 text-center py-8">No tracking events yet.</p>
           ) : (
-            <Table aria-label="Recent tracking events">
+            <Table aria-label="Recent tracking events" className="table-soft">
               <TableHeader>
                 <TableColumn>TIME</TableColumn>
                 <TableColumn>CAMPAIGN</TableColumn>

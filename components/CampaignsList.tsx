@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Card, CardBody, CardHeader, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Button } from '@heroui/react';
-import { FiMail, FiPlus, FiEye, FiEdit, FiUsers, FiMousePointer } from 'react-icons/fi';
+import { FiMail, FiPlus, FiEye, FiEdit, FiUsers, FiMousePointer, FiRefreshCw } from 'react-icons/fi';
 
 interface Campaign {
   id: string;
@@ -20,52 +21,67 @@ interface CampaignsListProps {
 }
 
 export default function CampaignsList({ campaigns }: CampaignsListProps) {
+  const router = useRouter();
+
   return (
     <>
-      <Card className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl animate-slide-down">
+      <Card className="mb-6 bg-white/95 shadow-sm border border-slate-200 rounded-2xl">
         <CardHeader className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3 animate-fade-in">
-              <FiMail size={32} className="animate-float" />
-              Campaigns
-            </h1>
-            <p className="text-white/90 mt-1 animate-slide-up">Manage your email marketing campaigns</p>
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-blue-50 text-blue-700 rounded-xl">
+              <FiMail size={28} />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900">Campaigns</h1>
+              <p className="text-slate-500 mt-1">Manage every send in one calm place</p>
+            </div>
           </div>
-          <Button
-            as={Link}
-            href="/campaigns/new"
-            color="secondary"
-            variant="solid"
-            startContent={<FiPlus />}
-            className="bg-white text-blue-600 font-semibold hover:bg-white/90"
-            size="lg"
-          >
-            Create Campaign
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              onPress={() => router.refresh()}
+              variant="bordered"
+              startContent={<FiRefreshCw />}
+              className="border-slate-200 text-slate-800 rounded-xl"
+              size="md"
+            >
+              Reload
+            </Button>
+            <Button
+              as={Link}
+              href="/campaigns/new"
+              color="secondary"
+              variant="solid"
+              startContent={<FiPlus />}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-md rounded-xl"
+              size="md"
+            >
+              Create campaign
+            </Button>
+          </div>
         </CardHeader>
       </Card>
 
-      <Card className="shadow-lg animate-fade-in">
+      <Card className="shadow-sm border border-slate-200 rounded-2xl bg-white/95">
         {campaigns.length === 0 ? (
           <CardBody className="text-center py-16">
-            <FiMail className="mx-auto mb-4 text-6xl text-gray-300 animate-float" />
-            <p className="text-gray-600 mb-6 text-lg animate-slide-up">No campaigns yet. Create your first campaign to get started.</p>
+            <FiMail className="mx-auto mb-4 text-6xl text-gray-300" />
+            <p className="text-gray-600 mb-6 text-lg">No campaigns yet. Create your first campaign to get started.</p>
             <Button
               as={Link}
               href="/campaigns/new"
               color="primary"
               variant="solid"
               startContent={<FiPlus />}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold"
-              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl"
+              size="md"
             >
-              Create Campaign
+              Create campaign
             </Button>
           </CardBody>
         ) : (
-          <Table aria-label="Campaigns table" selectionMode="none">
+          <Table aria-label="Campaigns table" selectionMode="none" className="table-soft text-sm">
             <TableHeader>
-              <TableColumn>NAME</TableColumn>
+              <TableColumn>CAMPAIGN</TableColumn>
               <TableColumn>SUBJECT</TableColumn>
               <TableColumn>
                 <div className="flex items-center gap-2">
@@ -86,28 +102,32 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
                 </div>
               </TableColumn>
               <TableColumn>STATUS</TableColumn>
-              <TableColumn>CREATED</TableColumn>
               <TableColumn>ACTIONS</TableColumn>
             </TableHeader>
             <TableBody>
               {campaigns.map((campaign) => (
                 <TableRow key={campaign.id}>
                   <TableCell>
-                    <span className="font-semibold text-gray-900">{campaign.name}</span>
+                    <div className="flex flex-col gap-1">
+                      <span className="font-semibold text-gray-900">{campaign.name}</span>
+                      <span className="text-xs text-gray-500">
+                        Created {new Date(campaign.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
                   </TableCell>
-                  <TableCell className="text-gray-600">{campaign.subject}</TableCell>
+                  <TableCell className="text-gray-700">{campaign.subject}</TableCell>
                   <TableCell>
-                    <Chip color="primary" variant="flat" size="sm">
+                    <Chip color="primary" variant="flat" size="sm" className="min-w-[52px] justify-center">
                       {campaign.recipient_count || 0}
                     </Chip>
                   </TableCell>
                   <TableCell>
-                    <Chip color="success" variant="flat" size="sm">
+                    <Chip color="success" variant="flat" size="sm" className="min-w-[52px] justify-center">
                       {campaign.opened_count || 0}
                     </Chip>
                   </TableCell>
                   <TableCell>
-                    <Chip color="warning" variant="flat" size="sm">
+                    <Chip color="warning" variant="flat" size="sm" className="min-w-[52px] justify-center">
                       {campaign.clicked_count || 0}
                     </Chip>
                   </TableCell>
@@ -116,22 +136,20 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
                       color={campaign.status === 'sent' ? 'success' : 'warning'} 
                       variant="flat"
                       size="sm"
+                      className="capitalize rounded-full"
                     >
                       {campaign.status}
                     </Chip>
                   </TableCell>
-                  <TableCell className="text-gray-600">
-                    {new Date(campaign.created_at).toLocaleDateString()}
-                  </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button
                         as={Link}
                         href={`/campaigns/${campaign.id}`}
                         size="sm"
-                        variant="light"
+                        variant="flat"
                         startContent={<FiEye />}
-                        className="text-blue-600"
+                        className="rounded-lg border border-slate-200 text-blue-700 bg-blue-50"
                       >
                         View
                       </Button>
@@ -139,9 +157,9 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
                         as={Link}
                         href={`/campaigns/${campaign.id}/edit`}
                         size="sm"
-                        variant="light"
+                        variant="flat"
                         startContent={<FiEdit />}
-                        className="text-purple-600"
+                        className="rounded-lg border border-slate-200 text-slate-800"
                       >
                         Edit
                       </Button>

@@ -49,50 +49,50 @@ export default async function Home() {
       value: stats.total_recipients, 
       icon: <FiUsers size={24} />, 
       color: 'primary',
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Emails Sent', 
       value: stats.sent_count, 
       icon: <FiSend size={24} />, 
       color: 'secondary',
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Opened', 
       value: stats.opened_count, 
       icon: <FiMail size={24} />, 
       color: 'success',
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-emerald-50 to-teal-50'
     },
     { 
       title: 'Clicked', 
       value: stats.clicked_count, 
       icon: <FiMousePointer size={24} />, 
       color: 'warning',
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-amber-50 to-orange-50'
     },
     { 
       title: 'Open Rate', 
       value: `${stats.open_rate.toFixed(1)}%`, 
       icon: <FiTrendingUp size={24} />, 
       color: 'primary',
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
     { 
       title: 'Click Rate', 
       value: `${stats.click_rate.toFixed(1)}%`, 
       icon: <FiActivity size={24} />, 
       color: 'secondary',
-      gradient: 'from-gray-100 to-gray-200'
+      gradient: 'from-blue-50 to-indigo-50'
     },
   ];
 
   return (
     <div className="container">
       <DashboardHeader 
-        title="Punhe CRM Dashboard"
-        description="Track email opens and clicks for your marketing campaigns"
+        title="Punhe CRM dashboard"
+        description="A calmer view of your campaign performance, with the numbers that matter most."
       />
 
       <div className="stats-grid">
