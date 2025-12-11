@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiSave, FiX } from 'react-icons/fi';
@@ -22,13 +22,7 @@ export default function EditCampaignPage() {
     status: 'draft' as 'draft' | 'sent' | 'scheduled',
   });
 
-  useEffect(() => {
-    if (campaignId) {
-      fetchCampaign();
-    }
-  }, [campaignId]);
-
-  const fetchCampaign = async () => {
+  const fetchCampaign = useCallback(async () => {
     try {
       const response = await fetch(`/api/campaigns/${campaignId}`);
       if (response.ok) {
@@ -52,7 +46,13 @@ export default function EditCampaignPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [campaignId, router]);
+
+  useEffect(() => {
+    if (campaignId) {
+      fetchCampaign();
+    }
+  }, [campaignId, fetchCampaign]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,9 +189,9 @@ export default function EditCampaignPage() {
                 label: "text-gray-700 font-semibold"
               }}
             >
-              <SelectItem key="draft" value="draft">Draft</SelectItem>
-              <SelectItem key="sent" value="sent">Sent</SelectItem>
-              <SelectItem key="scheduled" value="scheduled">Scheduled</SelectItem>
+              <SelectItem key="draft">Draft</SelectItem>
+              <SelectItem key="sent">Sent</SelectItem>
+              <SelectItem key="scheduled">Scheduled</SelectItem>
             </Select>
 
             <Textarea

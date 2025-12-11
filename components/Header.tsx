@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -28,22 +29,25 @@ export default function Header() {
   return (
     <Navbar 
       onMenuOpenChange={setIsMenuOpen}
-      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+      className="bg-white text-gray-900 shadow-sm border-b border-gray-200"
       maxWidth="xl"
       isBordered
     >
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden text-white"
+          className="sm:hidden text-gray-900"
         />
         <NavbarBrand>
-          <img 
+          <Image 
             src="/assests/favicon.ico" 
             alt="Punhe CRM" 
+            width={32}
+            height={32}
             className="w-8 h-8 mr-2"
+            priority
           />
-          <p className="font-bold text-white text-lg">Punhe CRM</p>
+          <p className="font-bold text-lg text-gray-900">Punhe CRM</p>
         </NavbarBrand>
       </NavbarContent>
 
@@ -57,10 +61,10 @@ export default function Header() {
             <NavbarItem key={item.href} isActive={isActive}>
               <Link
                 href={item.href}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-colors ${
                   isActive 
-                    ? 'bg-white/20 text-white font-semibold' 
-                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    ? 'bg-gray-100 text-gray-900 font-semibold' 
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
                 <Icon size={18} />
@@ -76,17 +80,17 @@ export default function Header() {
           <Button
             as={Link}
             href="/campaigns/new"
-            color="secondary"
+            color="primary"
             variant="solid"
             startContent={<FiPlus />}
-            className="bg-white text-blue-600 font-semibold hover:bg-white/90"
+            className="font-semibold rounded-full px-4"
           >
             New Campaign
           </Button>
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarMenu className="bg-gradient-to-b from-blue-600 to-purple-600">
+      <NavbarMenu className="bg-white">
         {navItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || 
@@ -96,10 +100,10 @@ export default function Header() {
             <NavbarMenuItem key={`${item.href}-${index}`} isActive={isActive}>
               <Link
                 href={item.href}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                   isActive 
-                    ? 'bg-white/20 text-white font-semibold' 
-                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    ? 'bg-gray-100 text-gray-900 font-semibold' 
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -113,10 +117,10 @@ export default function Header() {
           <Button
             as={Link}
             href="/campaigns/new"
-            color="secondary"
+            color="primary"
             variant="solid"
             startContent={<FiPlus />}
-            className="w-full bg-white text-blue-600 font-semibold hover:bg-white/90 mt-2"
+            className="w-full font-semibold mt-2"
             onClick={() => setIsMenuOpen(false)}
           >
             New Campaign

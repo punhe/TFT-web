@@ -311,7 +311,7 @@ export default function TestPage() {
 
         {results.length === 0 && (
           <p style={{ color: '#6b7280', textAlign: 'center', padding: '40px' }}>
-            Click "Run All Tests" to start testing
+            Click &quot;Run All Tests&quot; to start testing
           </p>
         )}
       </div>

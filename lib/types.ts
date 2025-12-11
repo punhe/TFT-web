@@ -13,11 +13,11 @@ export interface Recipient {
   id: string;
   campaign_id: string;
   email: string;
-  name?: string;
-  sent_at?: string;
-  opened_at?: string;
+  name: string | null;
+  sent_at: string | null;
+  opened_at: string | null;
   opened_count: number;
-  clicked_at?: string;
+  clicked_at: string | null;
   clicked_count: number;
 }
 
