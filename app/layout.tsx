@@ -17,9 +17,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="bg-[var(--bg)] text-slate-900">
+    <html lang="en" className="light">
+      <body className="min-h-screen bg-background text-foreground antialiased">
         <Providers>
+          {/* Floating gradient orbs */}
+          <div className="floating-orb floating-orb-1" />
+          <div className="floating-orb floating-orb-2" />
+          
           <Header />
           <main className="main-content">
             {children}
@@ -29,4 +33,3 @@ export default function RootLayout({
     </html>
   )
 }
-

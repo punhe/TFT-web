@@ -103,6 +103,7 @@ export default async function Home() {
             value={stat.value}
             icon={stat.icon}
             gradient={stat.gradient}
+            index={index}
           />
         ))}
       </div>
