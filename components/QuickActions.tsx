@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Card, CardBody, CardHeader, Button } from '@heroui/react';
-import { FiActivity } from 'react-icons/fi';
+import { FiActivity, FiMail, FiPlus, FiBarChart2 } from 'react-icons/fi';
 
 export default function QuickActions() {
   return (
@@ -24,7 +24,8 @@ export default function QuickActions() {
             color="primary"
             variant="flat"
             size="md"
-            className="rounded-xl px-4 justify-start w-full bg-blue-50 text-blue-800 border border-blue-100"
+            startContent={<FiMail />}
+            className="rounded-xl px-4 justify-start w-full bg-blue-50 text-blue-800 border border-blue-100 shadow-sm"
           >
             View all campaigns
           </Button>
@@ -34,6 +35,7 @@ export default function QuickActions() {
             color="secondary"
             variant="solid"
             size="md"
+            startContent={<FiPlus />}
             className="rounded-xl px-4 justify-start w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
           >
             Create new campaign
@@ -44,7 +46,8 @@ export default function QuickActions() {
             color="default"
             variant="bordered"
             size="md"
-            className="rounded-xl px-4 justify-start w-full border-slate-200 text-slate-800"
+            startContent={<FiBarChart2 />}
+            className="rounded-xl px-4 justify-start w-full border-slate-200 text-slate-800 bg-white shadow-sm"
           >
             View analytics
           </Button>

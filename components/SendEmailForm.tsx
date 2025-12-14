@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Input, Button, Alert } from '@heroui/react';
+import { FiSend } from 'react-icons/fi';
 
 export default function SendEmailForm({ campaignId }: { campaignId: string }) {
   const [email, setEmail] = useState('');
@@ -98,7 +99,8 @@ export default function SendEmailForm({ campaignId }: { campaignId: string }) {
           color="primary"
           size="md"
           isLoading={loading}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl"
+          startContent={!loading && <FiSend />}
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl px-5"
         >
           {loading ? 'Sending...' : 'Send email'}
         </Button>

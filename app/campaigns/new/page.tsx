@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardBody, CardHeader, Input, Textarea, Button } from '@heroui/react';
+import { FiPlus, FiX } from 'react-icons/fi';
 
 export default function NewCampaignPage() {
   const router = useRouter();
@@ -134,16 +135,19 @@ export default function NewCampaignPage() {
                 color="primary"
                 size="lg"
                 isLoading={loading}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl"
+                startContent={!loading && <FiPlus />}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl px-6"
               >
                 {loading ? 'Creating...' : 'Create campaign'}
               </Button>
               <Button
                 type="button"
-                variant="bordered"
+                variant="flat"
+                color="default"
                 size="lg"
+                startContent={<FiX />}
                 onPress={() => router.back()}
-                className="font-semibold rounded-xl border-slate-200"
+                className="font-semibold rounded-xl bg-white text-slate-800 border border-slate-200 shadow-sm hover:bg-slate-50"
               >
                 Cancel
               </Button>

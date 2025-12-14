@@ -64,9 +64,10 @@ export default function CampaignDetailContent({ campaign, recipients, statCards 
             <div className="flex gap-3">
               <Button
                 onPress={() => router.refresh()}
-                variant="bordered"
+                variant="flat"
+                color="default"
                 startContent={<FiRefreshCw />}
-                className="border-slate-200 text-slate-800 rounded-xl"
+                className="rounded-xl bg-white text-slate-800 border border-slate-200 shadow-sm hover:bg-slate-50"
                 size="md"
               >
                 Reload
@@ -74,9 +75,10 @@ export default function CampaignDetailContent({ campaign, recipients, statCards 
               <Button
                 as={Link}
                 href="/campaigns"
-                variant="bordered"
+                variant="flat"
+                color="default"
                 startContent={<FiArrowLeft />}
-                className="border-slate-200 text-slate-800 rounded-xl"
+                className="rounded-xl bg-white text-slate-800 border border-slate-200 shadow-sm hover:bg-slate-50"
                 size="md"
               >
                 Back to campaigns

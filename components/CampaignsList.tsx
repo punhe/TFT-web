@@ -39,9 +39,10 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
           <div className="flex gap-3">
             <Button
               onPress={() => router.refresh()}
-              variant="bordered"
+              variant="flat"
+              color="default"
               startContent={<FiRefreshCw />}
-              className="border-slate-200 text-slate-800 rounded-xl"
+              className="rounded-xl bg-white text-slate-800 border border-slate-200 shadow-sm hover:bg-slate-50"
               size="md"
             >
               Reload
@@ -52,7 +53,7 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
               color="secondary"
               variant="solid"
               startContent={<FiPlus />}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-md rounded-xl"
+              className="rounded-xl px-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-md"
               size="md"
             >
               Create campaign
@@ -148,8 +149,9 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
                         href={`/campaigns/${campaign.id}`}
                         size="sm"
                         variant="flat"
+                        color="primary"
                         startContent={<FiEye />}
-                        className="rounded-lg border border-slate-200 text-blue-700 bg-blue-50"
+                        className="rounded-lg bg-blue-50 text-blue-800 border border-blue-100 shadow-sm"
                       >
                         View
                       </Button>
@@ -158,8 +160,9 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
                         href={`/campaigns/${campaign.id}/edit`}
                         size="sm"
                         variant="flat"
+                        color="default"
                         startContent={<FiEdit />}
-                        className="rounded-lg border border-slate-200 text-slate-800"
+                        className="rounded-lg bg-white text-slate-800 border border-slate-200 shadow-sm hover:bg-slate-50"
                       >
                         Edit
                       </Button>

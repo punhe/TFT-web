@@ -104,9 +104,10 @@ export default function EditCampaignPage() {
           <Button
             as={Link}
             href={`/campaigns/${campaignId}`}
-            variant="bordered"
+            variant="flat"
+            color="default"
             startContent={<FiArrowLeft />}
-            className="text-slate-800 border-slate-200 rounded-xl"
+            className="text-slate-800 border border-slate-200 rounded-xl bg-white shadow-sm hover:bg-slate-50"
             size="md"
           >
             Back
@@ -249,10 +250,11 @@ export default function EditCampaignPage() {
               <Button
                 as={Link}
                 href={`/campaigns/${campaignId}`}
-                variant="bordered"
+                variant="flat"
+                color="default"
                 size="lg"
                 startContent={<FiX />}
-                className="font-semibold rounded-xl border-slate-200"
+                className="font-semibold rounded-xl bg-white text-slate-800 border border-slate-200 shadow-sm hover:bg-slate-50"
               >
                 Cancel
               </Button>
