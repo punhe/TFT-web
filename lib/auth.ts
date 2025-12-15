@@ -39,3 +39,4 @@ export async function verifySession(accessToken: string): Promise<boolean> {
     return false;
   }
 }
+
