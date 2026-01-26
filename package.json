@@ -24,12 +24,14 @@
     "recharts": "^3.5.1"
   },
   "devDependencies": {
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^22.10.1",
     "@types/nodemailer": "^6.4.14",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.0.0",
+    "dotenv": "^17.2.3",
+    "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",

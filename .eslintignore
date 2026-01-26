@@ -1,0 +1,7 @@
+node_modules
+.next
+out
+public
+scripts
+supabase-sql-learning-migration.sql
+supabase-schema.sql
