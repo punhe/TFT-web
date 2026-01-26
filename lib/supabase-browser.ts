@@ -14,3 +14,4 @@ export const supabaseBrowser = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
+
