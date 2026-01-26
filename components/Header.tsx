@@ -3,12 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  FiHome, 
-  FiMail, 
-  FiBarChart2, 
-  FiPlus,
-  FiCheckCircle,
+import {
+  FiCode,
+  FiBookOpen,
+  FiDatabase,
   FiZap,
   FiUser,
   FiLogOut,
@@ -16,14 +14,14 @@ import {
 } from 'react-icons/fi';
 import { useState } from 'react';
 import { m } from 'framer-motion';
-import { 
-  Navbar, 
-  NavbarBrand, 
-  NavbarContent, 
-  NavbarItem, 
-  NavbarMenuToggle, 
-  NavbarMenu, 
-  NavbarMenuItem, 
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
   Button,
   Dropdown,
   DropdownTrigger,
@@ -40,10 +38,7 @@ export default function Header() {
   const { user, loading, signOut } = useAuth();
 
   const navItems = [
-    { href: '/', label: 'Dashboard', icon: FiHome },
-    { href: '/campaigns', label: 'Campaigns', icon: FiMail },
-    { href: '/analytics', label: 'Analytics', icon: FiBarChart2 },
-    { href: '/test', label: 'Test', icon: FiCheckCircle },
+    { href: '/sql-editor', label: 'SQL Editor', icon: FiCode },
   ];
 
   const handleSignOut = async () => {
@@ -66,12 +61,17 @@ export default function Header() {
     return 'U';
   };
 
+  // Don't show header on auth pages
+  if (pathname?.startsWith('/login') || pathname?.startsWith('/register') || pathname?.startsWith('/forgot-password')) {
+    return null;
+  }
+
   return (
-    <Navbar 
+    <Navbar
       onMenuOpenChange={setIsMenuOpen}
       isMenuOpen={isMenuOpen}
       className="bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-sm"
-      maxWidth="xl"
+      maxWidth="full"
       height="5rem"
       classNames={{
         wrapper: "px-6",
@@ -98,7 +98,7 @@ export default function Header() {
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden text-gray-700"
         />
-        <NavbarBrand as={Link} href="/" className="cursor-pointer gap-4">
+        <NavbarBrand as={Link} href="/sql-editor" className="cursor-pointer gap-4">
           <m.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -106,27 +106,22 @@ export default function Header() {
             className="relative"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-2xl blur-lg animate-pulse-slow" />
-            <Image 
-              src="/assests/favicon.ico" 
-              alt="Punhe CRM" 
-              width={56}
-              height={56}
-              className="relative w-14 h-14 rounded-2xl shadow-lg ring-2 ring-white/50"
-              priority
-            />
+            <div className="relative w-14 h-14 rounded-2xl shadow-lg ring-2 ring-white/50 bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <FiDatabase className="text-white text-2xl" />
+            </div>
           </m.div>
-          <m.div 
+          <m.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="hidden sm:block"
           >
             <p className="font-bold text-xl bg-gradient-to-r from-gray-900 via-primary to-secondary bg-clip-text text-transparent">
-              Punhe CRM
+              SQL Learning App
             </p>
             <p className="text-xs text-gray-500 flex items-center gap-1">
               <FiZap className="text-warning" size={12} />
-              Email journeys that feel human
+              Practice SQL queries safely
             </p>
           </m.div>
         </NavbarBrand>
@@ -135,9 +130,9 @@ export default function Header() {
       <NavbarContent className="hidden sm:flex gap-2" justify="center">
         {navItems.map((item, index) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || 
+          const isActive = pathname === item.href ||
             (item.href !== '/' && pathname?.startsWith(item.href));
-          
+
           return (
             <NavbarItem key={item.href} isActive={isActive}>
               <m.div
@@ -147,11 +142,10 @@ export default function Header() {
               >
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary font-semibold shadow-sm border border-primary/20' 
+                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-300 ${isActive
+                      ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary font-semibold shadow-sm border border-primary/20'
                       : 'text-gray-600 hover:bg-gray-100/80 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   <Icon size={18} className={isActive ? 'text-primary' : ''} />
                   <span>{item.label}</span>
@@ -163,26 +157,6 @@ export default function Header() {
       </NavbarContent>
 
       <NavbarContent justify="end" className="gap-4">
-        {/* New Campaign Button */}
-        <NavbarItem className="hidden lg:flex">
-          <m.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Button
-              as={Link}
-              href="/campaigns/new"
-              className="relative overflow-hidden bg-gradient-to-r from-primary via-primary-600 to-secondary text-white font-semibold rounded-xl px-5 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
-              startContent={<FiPlus className="text-lg" />}
-            >
-              <span className="relative z-10">New Campaign</span>
-            </Button>
-          </m.div>
-        </NavbarItem>
-
         {/* User Menu */}
         <NavbarItem>
           {loading ? (
@@ -211,8 +185,8 @@ export default function Header() {
                   />
                 </m.div>
               </DropdownTrigger>
-              <DropdownMenu 
-                aria-label="Profile Actions" 
+              <DropdownMenu
+                aria-label="Profile Actions"
                 variant="flat"
                 className="w-64"
               >
@@ -224,8 +198,8 @@ export default function Header() {
                     <p className="text-sm text-gray-500">{user.email}</p>
                   </div>
                 </DropdownItem>
-                <DropdownItem 
-                  key="settings" 
+                <DropdownItem
+                  key="settings"
                   startContent={<FiSettings className="text-gray-500" />}
                   className="py-2"
                 >
@@ -272,9 +246,9 @@ export default function Header() {
       <NavbarMenu className="bg-white/95 backdrop-blur-xl pt-6">
         {navItems.map((item, index) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || 
+          const isActive = pathname === item.href ||
             (item.href !== '/' && pathname?.startsWith(item.href));
-          
+
           return (
             <NavbarMenuItem key={`${item.href}-${index}`}>
               <m.div
@@ -284,11 +258,10 @@ export default function Header() {
               >
                 <Link
                   href={item.href}
-                  className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary font-semibold border border-primary/20' 
+                  className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 ${isActive
+                      ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary font-semibold border border-primary/20'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <div className={`p-2 rounded-xl ${isActive ? 'bg-primary/10' : 'bg-gray-100'}`}>
@@ -300,24 +273,6 @@ export default function Header() {
             </NavbarMenuItem>
           );
         })}
-        
-        <NavbarMenuItem className="mt-4">
-          <m.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-          >
-            <Button
-              as={Link}
-              href="/campaigns/new"
-              className="w-full bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl py-6 shadow-lg"
-              startContent={<FiPlus className="text-lg" />}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              New Campaign
-            </Button>
-          </m.div>
-        </NavbarMenuItem>
 
         {/* Mobile user section */}
         {user && (
