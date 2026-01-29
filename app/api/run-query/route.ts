@@ -128,11 +128,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<QueryResu
         const queryWithTimeout = `SET statement_timeout = '${QUERY_TIMEOUT_MS}ms'; ${validation.preparedSql}`;
 
         // Use Postgres RPC to execute the query safely
-        // We execute via the database directly using raw SQL through the PostgREST
-        // Since we can't use raw SQL directly, we'll use a workaround with the rpc function
-
-        // First, check if execute_safe_query function exists, if not use a different approach
-        const { data, error } = await supabaseAdmin.rpc('execute_safe_query', {
+        // We use the supabaseAuth client (user's token) so that auth.uid() is available in the DB
+        const { data, error } = await supabaseAuth.rpc('execute_safe_query', {
             query_text: validation.preparedSql
         });
 

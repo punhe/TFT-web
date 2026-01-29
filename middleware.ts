@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Routes that don't require authentication
-const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
+const publicRoutes = ['/', '/login', '/register', '/forgot-password', '/reset-password'];
 
 // Routes that are public (API routes for tracking)
 const publicApiRoutes = ['/api/track'];
@@ -36,8 +36,8 @@ export async function middleware(request: NextRequest) {
 
   // Get all cookies that might contain Supabase auth
   const cookies = request.cookies.getAll();
-  const hasAuthCookie = cookies.some(cookie => 
-    cookie.name.includes('supabase') || 
+  const hasAuthCookie = cookies.some(cookie =>
+    cookie.name.includes('supabase') ||
     cookie.name.includes('sb-') ||
     cookie.name.includes('auth-token')
   );

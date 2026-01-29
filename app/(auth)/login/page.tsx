@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { Card, CardBody, Input, Button, Divider, Checkbox } from '@heroui/react';
 import { m, AnimatePresence } from 'framer-motion';
@@ -96,7 +97,24 @@ const FloatingIcons = () => {
 };
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <m.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full"
+        />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signIn, user, loading: authLoading } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -107,17 +125,20 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const redirect = searchParams.get('redirect') || '/sql-editor';
+
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user) {
-      router.push('/sql-editor');
+      window.location.href = redirect;
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, redirect]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     const { error } = await signIn(email, password);
 
@@ -126,9 +147,11 @@ export default function LoginPage() {
       setLoading(false);
     } else {
       setSuccess('Successfully signed in! Redirecting...');
+      // Use window.location.href for a more reliable auth transition in production
+      // to ensure cookies are properly sent to the middleware
       setTimeout(() => {
-        router.push('/sql-editor');
-      }, 1000);
+        window.location.href = redirect;
+      }, 500);
     }
   };
 
